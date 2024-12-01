@@ -1,7 +1,6 @@
-import AppRoutes from "./routes/AppRoutes";
+import React from 'react'
+import Dashboard from './components/Dashboard'
 
-function App() {
-  return <AppRoutes />;
+export default function App(){
+  return <Dashboard />
 }
-
-export default App;
