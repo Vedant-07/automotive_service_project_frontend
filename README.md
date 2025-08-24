@@ -1,12 +1,39 @@
-# React + Vite
+# 🚗 Automotive Service Frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Frontend for the **Automotive Service App** .  
+Built with **React, Vite, TailwindCSS, DaisyUI**, and **React Router v6**.
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## 📦 Tech Stack
+- **React + Vite** – fast build tool & framework  
+- **TailwindCSS + DaisyUI** – styling & UI components  
+- **React Router v6** – routing system  
 
-## Expanding the ESLint configuration
+---
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## 🔐 Auth Flow
+- `PrivateRoute` protects logged-in user pages.  
+- `AdminRoutes` protects admin-only pages.  
+
+---
+
+## 🚀 Getting Started
+
+```sh
+npm install
+npm run dev
+
+---
+
+## 📂 Project Structure
+src/
+├── components/ # Reusable UI components (Header, Footer, etc.)
+├── layouts/ # Public, Private, and Admin layouts
+├── pages/ # Landing, Signup, Login, Dashboard, etc.
+├── routes/ # Route definitions (AppRoutes, PrivateRoute, AdminRoutes)
+├── utils/ # Helper functions (API calls, token utils, etc.)
+├── App.jsx # Main App entry
+└── main.jsx # React DOM render
+
+---
