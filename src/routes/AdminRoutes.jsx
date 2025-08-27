@@ -1,7 +1,7 @@
 import { Routes, Route } from "react-router-dom";
 import PrivateRoute from "./PrivateRoute";
-import Page404 from "../pages/Page404";
-import AdminDashboard from "../pages/AdminDashboard";
+import NotFound from "../pages/NotFound";
+import AdminDashboard from "../pages/admin/AdminDashboard";
 import AdminLayout from "../layouts/AdminLayout";
 
 //sample build for the adminroutes --> delete thhis commnet later
@@ -16,7 +16,7 @@ export default function AdminRoutes() {
         </Route>
       </Route>
 
-      <Route path="*" element={<Page404 />} />
+      <Route path="*" element={<NotFound />} />
     </Routes>
   );
 }

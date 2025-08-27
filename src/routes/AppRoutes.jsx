@@ -3,10 +3,10 @@ import PublicLayout from "../layouts/PublicLayout";
 import PrivateLayout from "../layouts/PrivateLayout";
 import PrivateRoute from "./PrivateRoute";
 
-import LandingPage from "../pages/LandingPage";
-import SignupPage from "../pages/SignupPage";
-import Dashboard from "../pages/Dashboard";
-import Page404 from "../pages/Page404";
+import LandingPage from "../pages/public/LandingPage";
+import SignupPage from "../pages/auth/SignupPage";
+import Dashboard from "../pages/customer/Dashboard";
+import NotFound from "../pages/NotFound";
 
 import AdminRoutes from "./AdminRoutes";
 import HelloPage from "../pages/HelloPage";
@@ -15,7 +15,6 @@ export default function AppRoutes() {
   return (
     <>
       <Routes>
-
         {/* Public */}
         <Route element={<PublicLayout />}>
           <Route path="/" element={<LandingPage />} />
@@ -35,7 +34,7 @@ export default function AppRoutes() {
         <Route path="/admin/*" element={<AdminRoutes />} />
 
         {/* Catch-all */}
-        <Route path="*" element={<Page404 />} />
+        <Route path="*" element={<NotFound />} />
       </Routes>
     </>
   );

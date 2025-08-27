@@ -15,13 +15,13 @@ export const createHello = async (data) => {
 };
 
 // PATCH
-export const updateHello = async (id, data) => {
-  const response = await axios.patch(`${API_BASE}/${id}`, data);
+export const updateHello = async () => {
+  const response = await axios.patch(API_BASE);
   return response.data;
 };
 
 // DELETE
-export const deleteHello = async (id) => {
-  const response = await axios.delete(`${API_BASE}/${id}`);
+export const deleteHello = async () => {
+  const response = await axios.delete(API_BASE);
   return response.data;
 };

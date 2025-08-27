@@ -16,12 +16,12 @@ const HelloPage = () => {
   };
 
   const handleUpdate = async () => {
-    const res = await updateHello(1, { msg: "Updated Hello!" });
+    const res = await updateHello();
     console.log("Updated:", res);
   };
 
   const handleDelete = async () => {
-    const res = await deleteHello(1);
+    const res = await deleteHello();
     console.log("Deleted:", res);
   };
 
