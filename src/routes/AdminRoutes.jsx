@@ -4,7 +4,6 @@ import NotFound from "../pages/NotFound";
 import AdminDashboard from "../pages/admin/AdminDashboard";
 import AdminLayout from "../layouts/AdminLayout";
 
-//sample build for the adminroutes --> delete thhis commnet later
 export default function AdminRoutes() {
   return (
     <Routes>

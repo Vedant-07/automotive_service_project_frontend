@@ -1,41 +1,43 @@
 import { Routes, Route } from "react-router-dom";
 import PublicLayout from "../layouts/PublicLayout";
-import PrivateLayout from "../layouts/PrivateLayout";
-import PrivateRoute from "./PrivateRoute";
+import NotFound from "../pages/NotFound";
 
 import LandingPage from "../pages/public/LandingPage";
 import SignupPage from "../pages/auth/SignupPage";
-import Dashboard from "../pages/customer/Dashboard";
-import NotFound from "../pages/NotFound";
+import LoginPage from "../pages/auth/LoginPage";
+import HelloPage from "../pages/HelloPage";
 
 import AdminRoutes from "./AdminRoutes";
-import HelloPage from "../pages/HelloPage";
+import CustomerRoutes from "./CustomerRoutes";
+import ServiceManagerRoutes from "./ServiceManagerRoutes";
+import Unauthorized from "../pages/Unauthorized";
+import PublicRoute from "./PublicRoute";
 
 export default function AppRoutes() {
   return (
-    <>
-      <Routes>
-        {/* Public */}
-        <Route element={<PublicLayout />}>
+    <Routes>
+      {/* Public */}
+      <Route element={<PublicLayout />}>
+        {/* Guard login/signup so logged-in users can’t return */}
+        <Route element={<PublicRoute />}>
           <Route path="/" element={<LandingPage />} />
           <Route path="/signup" element={<SignupPage />} />
-          {/* TODO:remove this hellopage after deployment done */}
-          <Route path="/api/hello" element={<HelloPage />} />
+          <Route path="/login" element={<LoginPage />} />
         </Route>
+        {/* Temp hello test route */}
+        <Route path="/api/hello" element={<HelloPage />} />
+      </Route>
 
-        {/* Private (normal user) */}
-        <Route element={<PrivateRoute />}>
-          <Route element={<PrivateLayout />}>
-            <Route path="/dashboard" element={<Dashboard />} />
-          </Route>
-        </Route>
+      {/* Protected role-based routes */}
+      <Route path="/admin/*" element={<AdminRoutes />} />
+      <Route path="/customer/*" element={<CustomerRoutes />} />
+      <Route path="/serviceManager/*" element={<ServiceManagerRoutes />} />
 
-        {/* Admin */}
-        <Route path="/admin/*" element={<AdminRoutes />} />
+      {/* Unauthorized */}
+      <Route path="/unauthorized" element={<Unauthorized />} />
 
-        {/* Catch-all */}
-        <Route path="*" element={<NotFound />} />
-      </Routes>
-    </>
+      {/* Catch-all */}
+      <Route path="*" element={<NotFound />} />
+    </Routes>
   );
 }

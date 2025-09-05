@@ -2,16 +2,16 @@ import React from "react";
 import { Outlet } from "react-router-dom";
 import Header from "../components/Header";
 
-const AdminLayout = () => {
+const CustomerLayout = () => {
   return (
     <>
       <Header />
       <div>
-        AdminLayout
+        CustomerLayout
         <Outlet />
       </div>
     </>
   );
 };
 
-export default AdminLayout;
+export default CustomerLayout;
