@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/outline";
 import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
+const { VITE_API_HOST } = import.meta.env;
 
 const SignupPage = () => {
   const [formData, setFormData] = useState({
@@ -116,7 +117,7 @@ const SignupPage = () => {
 
     try {
       const res = await axios.post(
-        "http://localhost:9001/signup/signup",
+        `${VITE_API_HOST}:9001/signup/signup`,
         payload,
         {
           withCredentials: true,

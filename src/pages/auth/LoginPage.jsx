@@ -4,6 +4,7 @@ import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
 import { addUser } from "../../slices/userSlice";
 import { useDispatch } from "react-redux";
+const { VITE_API_HOST } = import.meta.env;
 
 const LoginPage = () => {
   const [formData, setFormData] = useState({
@@ -64,7 +65,7 @@ const LoginPage = () => {
     }
 
     try {
-      const res = await axios.post("http://localhost:9002/login", formData, {
+      const res = await axios.post(`${VITE_API_HOST}:9002/login`, formData, {
         withCredentials: true,
       });
 
