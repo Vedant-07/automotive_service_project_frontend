@@ -6,10 +6,9 @@ const CustomerLayout = () => {
   return (
     <>
       <Header />
-      <div>
-        CustomerLayout
+      <main className="container mx-auto p-8 md:py-32">
         <Outlet />
-      </div>
+      </main>
     </>
   );
 };
