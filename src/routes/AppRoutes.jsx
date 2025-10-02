@@ -12,6 +12,7 @@ import CustomerRoutes from "./CustomerRoutes";
 import ServiceManagerRoutes from "./ServiceManagerRoutes";
 import Unauthorized from "../pages/Unauthorized";
 import PublicRoute from "./PublicRoute";
+import MechanicDashboard from "../pages/Mechanic/MechanicDashboard";
 
 export default function AppRoutes() {
   return (
@@ -27,6 +28,7 @@ export default function AppRoutes() {
         {/* Temp hello test route */}
         <Route path="/api/hello" element={<HelloPage />} />
       </Route>
+          <Route path="/mechanic" element={<MechanicDashboard />} />
 
       {/* Protected role-based routes */}
       <Route path="/admin/*" element={<AdminRoutes />} />
