@@ -3,8 +3,8 @@ import React, { useEffect, useState } from "react";
 
 export default function MechanicDashboard() {
   const [services, setServices] = useState([]);
-  const [modalData, setModalData] = useState(null); // which service is being confirmed
-  const [actionType, setActionType] = useState(null); // "do" or "complete"
+  const [modalData, setModalData] = useState(null); 
+  const [actionType, setActionType] = useState(null);
 
   useEffect(() => {
     const dummyData = [
@@ -33,7 +33,6 @@ export default function MechanicDashboard() {
     setServices(dummyData);
   }, []);
 
-  // ✅ handle action after modal confirmation
   const confirmAction = () => {
     if (!modalData) return;
 
@@ -47,13 +46,12 @@ export default function MechanicDashboard() {
       setServices((prev) => prev.filter((s) => s.id !== modalData.id));
     }
 
-    setModalData(null); // close modal
+    setModalData(null); 
     setActionType(null);
   };
 
   return (
     <div className="min-h-screen flex flex-col bg-[#f6f7fa] font-rubik">
-      {/* ✅ Header */}
       <div className="navbar bg-white shadow-sm px-6 border-b border-gray-200">
         <div className="flex-1 text-xl font-bold text-primary">PitStopPro</div>
         <div className="flex gap-4 items-center">
@@ -68,7 +66,6 @@ export default function MechanicDashboard() {
         </div>
       </div>
 
-      {/* ✅ Service Cards */}
       <div className="p-6 flex flex-col gap-5 flex-1">
         {services.length > 0 ? (
           services.map((service) => (
@@ -86,7 +83,6 @@ export default function MechanicDashboard() {
                 </div>
               </div>
 
-              {/* ✅ Button Logic */}
               <div className="flex gap-3">
                 {service.status === "pending" && (
                   <button
@@ -120,10 +116,8 @@ export default function MechanicDashboard() {
         )}
       </div>
 
-      {/* ✅ Footer */}
       <Footer />
 
-      {/* ✅ Modal */}
       {modalData && (
         <div className="fixed inset-0 flex items-center justify-center bg-black/40 z-50">
           <div className="bg-white rounded-xl shadow-lg p-6 w-96">
