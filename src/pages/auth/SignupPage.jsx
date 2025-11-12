@@ -146,189 +146,196 @@ const SignupPage = () => {
   };
 
   return (
-    <div className="flex justify-center items-center min-h-screen bg-gray-900 p-4">
-      <div className="card w-full max-w-2xl shadow-2xl bg-base-100">
-        <div className="card-body">
-          <h2 className="text-3xl font-bold text-center mb-4">
+    <div className="flex justify-center items-center min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 p-4 font-rubik py-8">
+      <div className="w-full max-w-2xl bg-slate-900/70 backdrop-blur-xl border border-white/10 rounded-2xl shadow-[0_18px_40px_-18px_rgba(15,166,233,0.7)] p-8">
+        <div className="text-center mb-8">
+          <h2 className="text-3xl md:text-4xl font-semibold text-white mb-2">
             Create an Account
           </h2>
-
-          {/* Error list shown between heading and Role dropdown (as requested) */}
-          {errorMessages.length > 0 && (
-            <div className="md:col-span-2 mb-4">
-              <div className="bg-red-50 border border-red-400 text-red-800 p-3 rounded">
-                <strong className="block mb-2">
-                  Please fix the following:
-                </strong>
-                <ul className="list-disc list-inside space-y-1">
-                  {errorMessages.map((m, i) => (
-                    <li key={i}>{m}</li>
-                  ))}
-                </ul>
-              </div>
-            </div>
-          )}
-
-          <form
-            onSubmit={handleSubmit}
-            className="grid grid-cols-1 md:grid-cols-2 gap-6"
-          >
-            {/* User Name */}
-            <div className="form-control">
-              <label className="label">
-                <span className="label-text">User Name</span>
-              </label>
-              <input
-                type="text"
-                name="userName"
-                value={formData.userName}
-                onChange={handleChange}
-                placeholder="Enter your name"
-                className="input input-bordered w-full"
-              />
-            </div>
-
-            {/* Email */}
-            <div className="form-control">
-              <label className="label">
-                <span className="label-text">Email</span>
-              </label>
-              <input
-                type="email"
-                name="userEmail"
-                value={formData.userEmail}
-                onChange={handleChange}
-                placeholder="Enter your email"
-                className="input input-bordered w-full"
-              />
-            </div>
-
-            {/* Password */}
-            <div className="form-control relative">
-              <label className="label">
-                <span className="label-text">Password</span>
-              </label>
-              <input
-                type={showPassword ? "text" : "password"}
-                name="userPassword"
-                value={formData.userPassword}
-                onChange={handleChange}
-                placeholder="Enter password (8-12 chars)"
-                className="input input-bordered w-full pr-10"
-              />
-              <button
-                type="button"
-                onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3 top-1/2"
-                aria-label={showPassword ? "Hide password" : "Show password"}
-              >
-                {showPassword ? (
-                  <EyeSlashIcon className="h-5 w-5 text-gray-500" />
-                ) : (
-                  <EyeIcon className="h-5 w-5 text-gray-500" />
-                )}
-              </button>
-            </div>
-
-            {/* Phone */}
-            <div className="form-control">
-              <label className="label">
-                <span className="label-text">Phone Number</span>
-              </label>
-              <input
-                type="tel"
-                name="userPhoneNumber"
-                value={formData.userPhoneNumber}
-                onChange={handleChange}
-                placeholder="10-digit number"
-                className="input input-bordered w-full"
-              />
-            </div>
-
-            {/* Address (full-width) */}
-            <div className="form-control md:col-span-2">
-              <label className="label">
-                <span className="label-text">Address</span>
-              </label>
-              <textarea
-                name="userAddress"
-                value={formData.userAddress}
-                onChange={handleChange}
-                placeholder="Enter full address (50-500 chars)"
-                className="textarea textarea-bordered w-full"
-              ></textarea>
-            </div>
-
-            {/* Role dropdown (full-width) */}
-            <div className="form-control md:col-span-2">
-              <label className="label">
-                <span className="label-text">Role</span>
-              </label>
-              <select
-                name="role"
-                value={formData.role}
-                onChange={handleChange}
-                className="select select-primary w-full"
-              >
-                <option value="">-- Select Role --</option>
-                <option value="CUSTOMER">Customer</option>
-                <option value="SERVICE_MANAGER">SERVICE_MANAGER</option>
-              </select>
-            </div>
-
-            {/* Conditional fields only shown and only sent for SERVICE_MANAGER */}
-            {formData.role === "SERVICE_MANAGER" && (
-              <>
-                <div className="form-control">
-                  <label className="label">
-                    <span className="label-text">Years of Experience</span>
-                  </label>
-                  <input
-                    type="number"
-                    name="yearsOfExperience"
-                    value={formData.yearsOfExperience}
-                    onChange={handleChange}
-                    placeholder="e.g. 5"
-                    className="input input-bordered w-full"
-                  />
-                </div>
-
-                <div className="form-control">
-                  <label className="label">
-                    <span className="label-text">Service Department</span>
-                  </label>
-                  <input
-                    type="text"
-                    name="serviceDepartment"
-                    value={formData.serviceDepartment}
-                    onChange={handleChange}
-                    placeholder="e.g. Engine, Tires"
-                    className="input input-bordered w-full"
-                  />
-                </div>
-              </>
-            )}
-
-            {/* Submit */}
-            <div className="form-control md:col-span-2 mt-4">
-              <button
-                type="submit"
-                className="btn btn-primary w-full"
-                disabled={loading}
-              >
-                {loading ? "Signing up..." : "Sign Up"}
-              </button>
-            </div>
-          </form>
-
-          {/* small helper */}
-          <p className="text-center text-sm mt-4">
-            Already have an account?{" "}
-            <Link to="/login" className="text-blue-600 hover:underline">
-              Login
-            </Link>
+          <p className="text-slate-400 text-sm">
+            Join PitStopPro and get started today
           </p>
         </div>
+
+        {/* Error list shown between heading and Role dropdown (as requested) */}
+        {errorMessages.length > 0 && (
+          <div className="md:col-span-2 mb-6">
+            <div className="bg-red-500/15 border border-red-400/40 text-red-200 p-4 rounded-xl">
+              <strong className="block mb-2 text-red-100">
+                Please fix the following:
+              </strong>
+              <ul className="list-disc list-inside space-y-1 text-sm">
+                {errorMessages.map((m, i) => (
+                  <li key={i}>{m}</li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        )}
+
+        <form
+          onSubmit={handleSubmit}
+          className="grid grid-cols-1 md:grid-cols-2 gap-6"
+        >
+          {/* User Name */}
+          <div className="form-control">
+            <label className="label pb-2">
+              <span className="label-text text-slate-300 font-medium">User Name</span>
+            </label>
+            <input
+              type="text"
+              name="userName"
+              value={formData.userName}
+              onChange={handleChange}
+              placeholder="Enter your name"
+              className="input w-full bg-slate-800/50 border-white/20 text-white placeholder:text-slate-500 focus:border-cyan-400/60 focus:outline-none"
+            />
+          </div>
+
+          {/* Email */}
+          <div className="form-control">
+            <label className="label pb-2">
+              <span className="label-text text-slate-300 font-medium">Email</span>
+            </label>
+            <input
+              type="email"
+              name="userEmail"
+              value={formData.userEmail}
+              onChange={handleChange}
+              placeholder="Enter your email"
+              className="input w-full bg-slate-800/50 border-white/20 text-white placeholder:text-slate-500 focus:border-cyan-400/60 focus:outline-none"
+            />
+          </div>
+
+          {/* Password */}
+          <div className="form-control relative">
+            <label className="label pb-2">
+              <span className="label-text text-slate-300 font-medium">Password</span>
+            </label>
+            <input
+              type={showPassword ? "text" : "password"}
+              name="userPassword"
+              value={formData.userPassword}
+              onChange={handleChange}
+              placeholder="Enter password (8-12 chars)"
+              className="input w-full bg-slate-800/50 border-white/20 text-white placeholder:text-slate-500 focus:border-cyan-400/60 focus:outline-none pr-10"
+            />
+            <button
+              type="button"
+              onClick={() => setShowPassword(!showPassword)}
+              className="absolute right-3 top-[42px]"
+              aria-label={showPassword ? "Hide password" : "Show password"}
+            >
+              {showPassword ? (
+                <EyeSlashIcon className="h-5 w-5 text-slate-400 hover:text-slate-300 transition-colors" />
+              ) : (
+                <EyeIcon className="h-5 w-5 text-slate-400 hover:text-slate-300 transition-colors" />
+              )}
+            </button>
+          </div>
+
+          {/* Phone */}
+          <div className="form-control">
+            <label className="label pb-2">
+              <span className="label-text text-slate-300 font-medium">Phone Number</span>
+            </label>
+            <input
+              type="tel"
+              name="userPhoneNumber"
+              value={formData.userPhoneNumber}
+              onChange={handleChange}
+              placeholder="10-digit number"
+              className="input w-full bg-slate-800/50 border-white/20 text-white placeholder:text-slate-500 focus:border-cyan-400/60 focus:outline-none"
+            />
+          </div>
+
+          {/* Address (full-width) */}
+          <div className="form-control md:col-span-2">
+            <label className="label pb-2">
+              <span className="label-text text-slate-300 font-medium">Address</span>
+            </label>
+            <textarea
+              name="userAddress"
+              value={formData.userAddress}
+              onChange={handleChange}
+              placeholder="Enter full address (50-500 chars)"
+              className="textarea w-full bg-slate-800/50 border-white/20 text-white placeholder:text-slate-500 focus:border-cyan-400/60 focus:outline-none"
+            ></textarea>
+          </div>
+
+          {/* Role dropdown (full-width) */}
+          <div className="form-control md:col-span-2">
+            <label className="label pb-2">
+              <span className="label-text text-slate-300 font-medium">Role</span>
+            </label>
+            <select
+              name="role"
+              value={formData.role}
+              onChange={handleChange}
+              className="select w-full bg-slate-800/50 border-white/20 text-white focus:border-cyan-400/60 focus:outline-none"
+            >
+              <option value="" className="bg-slate-800">-- Select Role --</option>
+              <option value="CUSTOMER" className="bg-slate-800">Customer</option>
+              <option value="SERVICE_MANAGER" className="bg-slate-800">SERVICE_MANAGER</option>
+            </select>
+          </div>
+
+          {/* Conditional fields only shown and only sent for SERVICE_MANAGER */}
+          {formData.role === "SERVICE_MANAGER" && (
+            <>
+              <div className="form-control">
+                <label className="label pb-2">
+                  <span className="label-text text-slate-300 font-medium">Years of Experience</span>
+                </label>
+                <input
+                  type="number"
+                  name="yearsOfExperience"
+                  value={formData.yearsOfExperience}
+                  onChange={handleChange}
+                  placeholder="e.g. 5"
+                  className="input w-full bg-slate-800/50 border-white/20 text-white placeholder:text-slate-500 focus:border-cyan-400/60 focus:outline-none"
+                />
+              </div>
+
+              <div className="form-control">
+                <label className="label pb-2">
+                  <span className="label-text text-slate-300 font-medium">Service Department</span>
+                </label>
+                <input
+                  type="text"
+                  name="serviceDepartment"
+                  value={formData.serviceDepartment}
+                  onChange={handleChange}
+                  placeholder="e.g. Engine, Tires"
+                  className="input w-full bg-slate-800/50 border-white/20 text-white placeholder:text-slate-500 focus:border-cyan-400/60 focus:outline-none"
+                />
+              </div>
+            </>
+          )}
+
+          {/* Submit */}
+          <div className="form-control md:col-span-2 mt-6">
+            <button
+              type="submit"
+              className="btn w-full bg-gradient-to-r from-cyan-500 to-blue-500 border-none text-slate-900 font-semibold hover:from-cyan-400 hover:to-sky-400 disabled:opacity-50 disabled:cursor-not-allowed"
+              disabled={loading}
+            >
+              {loading ? (
+                <span className="loading loading-spinner loading-sm"></span>
+              ) : (
+                "Sign Up"
+              )}
+            </button>
+          </div>
+        </form>
+
+        {/* small helper */}
+        <p className="text-center text-sm mt-6 text-slate-400">
+          Already have an account?{" "}
+          <Link to="/login" className="text-cyan-400 hover:text-cyan-300 font-semibold transition-colors">
+            Login
+          </Link>
+        </p>
       </div>
     </div>
   );

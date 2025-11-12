@@ -1,6 +1,7 @@
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { removeUser } from "../slices/userSlice";
+import { Link } from "react-router-dom";
 
 //TODO: once jwt token system is done then do conditionally rendering on the profile settings and all
 const Header = () => {
@@ -17,11 +18,11 @@ const Header = () => {
       <div className="navbar bg-gray-950 shadow-sm min-h-20 px-8">
         {/* Left side: Brand */}
         <div className="flex-1">
-          <a className="btn btn-ghost text-4xl">PitStopPro</a>
+          <Link to="/" className="btn btn-ghost text-4xl">PitStopPro</Link>
         </div>
 
-        {/* Right side: Avatar with dropdown ,also once token is there put it here*/}
-        {role && (
+        {/* Right side: Avatar or Auth buttons */}
+        {role ? (
           <div className="flex-none">
             <div className="dropdown dropdown-end">
               <div
@@ -54,6 +55,21 @@ const Header = () => {
                 </li>
               </ul>
             </div>
+          </div>
+        ) : (
+          <div className="flex items-center gap-3">
+            <Link
+              to="/login"
+              className="btn btn-outline btn-sm border-cyan-400/60 text-cyan-200 hover:bg-cyan-500/20"
+            >
+              Login
+            </Link>
+            <Link
+              to="/signup"
+              className="btn btn-sm bg-gradient-to-r from-cyan-500 to-blue-500 border-none text-slate-900 font-semibold hover:from-cyan-400 hover:to-sky-400"
+            >
+              Sign Up
+            </Link>
           </div>
         )}
       </div>
