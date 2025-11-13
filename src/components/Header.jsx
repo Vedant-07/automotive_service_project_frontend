@@ -1,6 +1,7 @@
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { removeUser } from "../slices/userSlice";
+import { Link } from "react-router-dom";
 
 //TODO: once jwt token system is done then do conditionally rendering on the profile settings and all
 const Header = () => {
@@ -14,46 +15,45 @@ const Header = () => {
 
   return (
     <>
-      <div className="navbar bg-slate-900/70 backdrop-blur-lg border-b border-white/10 shadow-lg min-h-20 px-8">
-        {/* Left side: Brand */}
+      <div className="navbar bg-gray-950 shadow-sm min-h-20 px-8">
+        {/* Left side: Brand with gradient */}
         <div className="flex-1">
-          <a className="btn btn-ghost text-4xl font-bold bg-gradient-to-r from-cyan-400 via-sky-400 to-blue-500 bg-clip-text text-transparent">PitStopPro</a>
+          <Link to="/" className="text-4xl font-bold bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent">
+            PitStopPro
+          </Link>
         </div>
 
-        {/* Right side: Avatar with dropdown ,also once token is there put it here*/}
-        {role && (
-          <div className="flex-none">
-            <div className="dropdown dropdown-end">
-              <div
-                tabIndex={0}
-                role="button"
-                className="btn btn-ghost btn-circle avatar border border-cyan-400/50 hover:border-cyan-300"
-              >
-                <div className="w-14 rounded-full">
-                  <img
-                    alt="Tailwind CSS Navbar component"
-                    src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp"
-                  />
-                </div>
-              </div>
-              <ul
-                tabIndex={0}
-                className="menu menu-md dropdown-content bg-slate-800 rounded-box z-1 mt-3 w-60 p-2 shadow-lg border border-slate-700"
-              >
-                <li>
-                  <a className="justify-between text-slate-200 hover:text-white hover:bg-slate-700">
-                    Profile
-                    <span className="badge badge-sm bg-cyan-500/20 text-cyan-300 border-cyan-400/30">New</span>
-                  </a>
-                </li>
-                <li>
-                  <a className="text-slate-200 hover:text-white hover:bg-slate-700">Settings</a>
-                </li>
-                <li>
-                  <button onClick={handleLogout} className="text-slate-200 hover:text-white hover:bg-slate-700">Logout</button>
-                </li>
-              </ul>
+        {/* Right side: Avatar or Auth buttons */}
+        {role ? (
+          <div className="flex-none flex items-center gap-4">
+            {/* Profile Image Placeholder */}
+            <div className="w-14 h-14 rounded-full border-2 border-cyan-400 flex items-center justify-center bg-gray-800">
+              <span className="text-white text-xs text-center leading-tight px-1">
+                Mechanic<br />Image
+              </span>
             </div>
+            {/* Logout Button */}
+            <button
+              onClick={handleLogout}
+              className="px-4 py-2 rounded-lg border-2 border-cyan-400 bg-blue-900 text-cyan-400 hover:bg-blue-800 transition-colors"
+            >
+              Logout
+            </button>
+          </div>
+        ) : (
+          <div className="flex items-center gap-3">
+            <Link
+              to="/login"
+              className="btn btn-outline btn-sm border-cyan-400/60 text-cyan-200 hover:bg-cyan-500/20"
+            >
+              Login
+            </Link>
+            <Link
+              to="/signup"
+              className="btn btn-sm bg-gradient-to-r from-cyan-500 to-blue-500 border-none text-slate-900 font-semibold hover:from-cyan-400 hover:to-sky-400"
+            >
+              Sign Up
+            </Link>
           </div>
         )}
       </div>
