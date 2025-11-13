@@ -7,7 +7,7 @@ import AdminLayout from "../layouts/AdminLayout";
 export default function AdminRoutes() {
   return (
     <Routes>
-      <Route element={<PrivateRoute allowedRole="admin" />}>
+      <Route element={<PrivateRoute allowedRole="ADMIN" />}>
         {/* TODO: create the layout for the admin */}
 
         <Route element={<AdminLayout />}>

@@ -30,42 +30,52 @@ const CustomerDashboard = () => {
           </div>
         </div>
 
-        {/* Download Invoice */}
+        {/* Service Status */}
         <div className="card bg-base-100 shadow-md overflow-hidden h-80 md:h-96 flex flex-col">
           <figure className="h-32 md:h-40 w-full">
             <img
-              src="https://img.daisyui.com/images/stock/photo-1556742400-b5b7c5128f93.webp"
-              alt="Download Invoice"
+              src="https://content.jdmagicbox.com/v2/comp/delhi/v3/011pxx11.xx11.150609094838.g5v3/catalogue/crossroads-helpline-roadside-assistance--okhla-industrial-area-phase-2-delhi-24-hours-car-repair-and-services-ijxhzjmx9k.jpg"
+              alt="Service Status"
               className="h-full w-full object-cover"
             />
           </figure>
           <div className="card-body text-center flex-1 flex flex-col justify-between">
             <div>
-              <h2 className="card-title justify-center">Download Invoice</h2>
-              <p className="text-sm">View your past services and download invoices in one click.</p>
+              <h2 className="card-title justify-center">Service Status</h2>
+              <p className="text-sm">View the status of your service bookings and track progress.</p>
             </div>
             <div className="card-actions justify-center mt-4">
-              <button className="btn btn-secondary w-full md:w-auto">Download</button>
+              <button 
+                onClick={() => navigate(`service-status`)}
+                className="btn btn-secondary w-full md:w-auto"
+              >
+                View Status
+              </button>
             </div>
           </div>
         </div>
 
-        {/* Service Center Helpline */}
+        {/* Feedbacks & Complaints */}
         <div className="card bg-base-100 shadow-md overflow-hidden h-80 md:h-96 flex flex-col">
           <figure className="h-32 md:h-40 w-full">
             <img
-              src="https://img.daisyui.com/images/stock/photo-1529626455594-4ff0802cfb7e.webp"
-              alt="Service Center"
+              src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTeuIyXqv_H3thfvuOz9DeTDx6JcVTkaTe1jA&s"
+              alt="Feedbacks"
               className="h-full w-full object-cover"
             />
           </figure>
           <div className="card-body text-center flex-1 flex flex-col justify-between">
             <div>
-              <h2 className="card-title justify-center">Service Center Helpline</h2>
-              <p className="text-sm">Need help? Reach out to our service support anytime.</p>
+              <h2 className="card-title justify-center">Feedbacks & Complaints</h2>
+              <p className="text-sm">Submit feedback or complaints and view responses from agents.</p>
             </div>
             <div className="card-actions justify-center mt-4">
-              <button className="btn btn-accent w-full md:w-auto">Call Now</button>
+              <button 
+                onClick={() => navigate(`feedbacks`)}
+                className="btn btn-accent w-full md:w-auto"
+              >
+                View Feedbacks
+              </button>
             </div>
           </div>
         </div>

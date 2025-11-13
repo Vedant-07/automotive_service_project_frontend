@@ -76,7 +76,7 @@ const LoginPage = () => {
 
       // role-based redirect
       const role = res.data.role;
-      if (role === "admin") navigate("/admin");
+      if (role === "ADMIN") navigate("/admin");
       else if (role === "SERVICE_MANAGER") navigate("/serviceManager");
       else if (role === "CUSTOMER") navigate("/customer");
       else navigate("/login");

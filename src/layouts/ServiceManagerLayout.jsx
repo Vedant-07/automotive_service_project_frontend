@@ -7,10 +7,9 @@ const ServiceManagerLayout = () => {
   return (
     <>
       <Header />
-      <div>
-        ServiceManagerLayout
+      <main className="container mx-auto p-8 md:py-32">
         <Outlet />
-      </div>
+      </main>
     </>
   );
 };
