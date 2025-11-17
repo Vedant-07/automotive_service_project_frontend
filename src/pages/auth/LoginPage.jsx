@@ -4,7 +4,14 @@ import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
 import { addUser } from "../../slices/userSlice";
 import { useDispatch } from "react-redux";
-const { VITE_API_HOST } = import.meta.env;
+
+// runtime-friendly VITE_API_HOST fallback used earlier
+const VITE_API_HOST =
+  (globalThis.__vite_import_meta__ &&
+    globalThis.__vite_import_meta__.env &&
+    globalThis.__vite_import_meta__.env.VITE_API_HOST) ||
+  (typeof process !== "undefined" && process.env.VITE_API_HOST) ||
+  "";
 
 const LoginPage = () => {
   const [formData, setFormData] = useState({
@@ -18,7 +25,6 @@ const LoginPage = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  // Simple client-side validation - returns array of error strings
   const clientValidate = () => {
     const errs = [];
     if (!formData.userEmail || formData.userEmail.trim() === "") {
@@ -30,7 +36,6 @@ const LoginPage = () => {
     return errs;
   };
 
-  // Parse backend response -------TODO:verifying is left of this function ---------
   const parseBackendErrors = (data) => {
     if (!data) return [];
     if (Array.isArray(data.message)) return data.message.map(String);
@@ -46,7 +51,6 @@ const LoginPage = () => {
   };
 
   const handleChange = (e) => {
-    // clear errors when user starts typing
     setErrorMessages([]);
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
@@ -56,7 +60,6 @@ const LoginPage = () => {
     setErrorMessages([]);
     setLoading(true);
 
-    // client-side check
     const clientErrors = clientValidate();
     if (clientErrors.length) {
       setErrorMessages(clientErrors);
@@ -71,16 +74,13 @@ const LoginPage = () => {
 
       console.log("Login success:", res.data);
       setLoading(false);
-      // after successful login
       dispatch(addUser(res.data));
 
-      // role-based redirect
       const role = res.data.role;
       if (role === "ADMIN") navigate("/admin");
       else if (role === "SERVICE_MANAGER") navigate("/serviceManager");
       else if (role === "CUSTOMER") navigate("/customer");
       else navigate("/login");
-      
     } catch (err) {
       setLoading(false);
       const resp = err?.response?.data;
@@ -103,13 +103,10 @@ const LoginPage = () => {
         <div className="card-body">
           <h2 className="text-3xl font-bold text-center mb-4">Login</h2>
 
-          {/* Error list */}
           {errorMessages.length > 0 && (
             <div className="mb-4">
               <div className="bg-red-50 border border-red-400 text-red-800 p-3 rounded">
-                <strong className="block mb-2">
-                  Please fix the following:
-                </strong>
+                <strong className="block mb-2">Please fix the following:</strong>
                 <ul className="list-disc list-inside space-y-1">
                   {errorMessages.map((m, i) => (
                     <li key={i}>{m}</li>
@@ -122,10 +119,11 @@ const LoginPage = () => {
           <form onSubmit={handleSubmit} className="space-y-6">
             {/* Email */}
             <div className="form-control">
-              <label className="label">
+              <label className="label" htmlFor="userEmail">
                 <span className="label-text">Email</span>
               </label>
               <input
+                id="userEmail"
                 type="email"
                 name="userEmail"
                 value={formData.userEmail}
@@ -137,10 +135,11 @@ const LoginPage = () => {
 
             {/* Password */}
             <div className="form-control relative">
-              <label className="label">
+              <label className="label" htmlFor="userPassword">
                 <span className="label-text">Password</span>
               </label>
               <input
+                id="userPassword"
                 type={showPassword ? "text" : "password"}
                 name="userPassword"
                 value={formData.userPassword}
@@ -164,17 +163,12 @@ const LoginPage = () => {
 
             {/* Submit */}
             <div className="form-control mt-4">
-              <button
-                type="submit"
-                className="btn btn-primary w-full"
-                disabled={loading}
-              >
+              <button type="submit" className="btn btn-primary w-full" disabled={loading}>
                 {loading ? "Logging in..." : "Login"}
               </button>
             </div>
           </form>
 
-          {/* small helper */}
           <p className="text-center text-sm mt-4">
             Don’t have an account?{" "}
             <Link to="/signup" className="text-blue-600 hover:underline">

@@ -4,7 +4,14 @@ import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
-const { VITE_API_HOST } = import.meta.env;
+// const { VITE_API_HOST } = import.meta.env;
+// runtime-friendly VITE_API_HOST fallback used earlier
+const VITE_API_HOST =
+  (globalThis.__vite_import_meta__ &&
+    globalThis.__vite_import_meta__.env &&
+    globalThis.__vite_import_meta__.env.VITE_API_HOST) ||
+  (typeof process !== "undefined" && process.env.VITE_API_HOST) ||
+  "";
 
 const ViewFeedbacks = () => {
   const navigate = useNavigate();
