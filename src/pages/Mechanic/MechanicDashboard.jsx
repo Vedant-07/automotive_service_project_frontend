@@ -3,18 +3,65 @@ import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { useSearchParams } from "react-router-dom";
 import { getMechanicWorkOrders, startWorkOrder, completeWorkOrder } from "../../utils/mechanicApi";
+import { debugToken, testMechanicAPI } from "../../utils/tokenDebug";
+
+// Dummy work orders data
+const DUMMY_WORK_ORDERS = [
+  {
+    vehicleId: 2,
+    status: "ASSIGNED",
+    description: "Oil change and filter replacement required",
+    scheduledAt: "2025-11-14T10:00:00Z",
+    startedAt: null,
+    completedAt: null,
+    estimatedCost: null,
+    finalCost: null,
+    managerId: null
+  },
+  {
+    vehicleId: 3,
+    status: "ASSIGNED",
+    description: "Brake pad replacement and wheel alignment",
+    scheduledAt: "2025-11-14T14:30:00Z",
+    startedAt: null,
+    completedAt: null,
+    estimatedCost: null,
+    finalCost: null,
+    managerId: null
+  }
+];
 
 export default function MechanicDashboard() {
-  const [services, setServices] = useState([]);
+  const [services, setServices] = useState(DUMMY_WORK_ORDERS);
   const [modalData, setModalData] = useState(null); 
   const [actionType, setActionType] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const user = useSelector((state) => state.user);
-  const mechanicId = user?.id || user?.userId || user?.mechanicId;
+  
+  // Extract userId from token in localStorage if available
+  const getTokenUserId = () => {
+    try {
+      const token = localStorage.getItem("authToken");
+      if (token) {
+        // JWT format: header.payload.signature
+        const parts = token.split(".");
+        if (parts.length === 3) {
+          const payload = JSON.parse(atob(parts[1]));
+          return payload.userId;
+        }
+      }
+    } catch (e) {
+      console.error("Error parsing token:", e);
+    }
+    return null;
+  };
+  
+  const tokenUserId = getTokenUserId();
+  const mechanicId = tokenUserId || user?.id || user?.userId || user?.mechanicId;
   const [searchParams] = useSearchParams();
   const mechanicIdFromQuery = searchParams.get("mechanicId");
-  const effectiveMechanicId = mechanicIdFromQuery || mechanicId || 3;
+  const effectiveMechanicId = mechanicIdFromQuery || mechanicId || 6;
   const STATUS_STYLES = {
     pending:
       "bg-amber-500/15 text-amber-200 border border-amber-200/40 shadow-[0_0_10px_-4px_rgba(251,191,36,0.6)]",
@@ -39,92 +86,43 @@ export default function MechanicDashboard() {
     }
   };
 
+  // Debug token on component mount
   useEffect(() => {
-    const fetchServices = async () => {
-      try {
-        setLoading(true);
-        setError(null);
-        const data = await getMechanicWorkOrders(effectiveMechanicId);
-        setServices(data || []);
-      } catch (err) {
-        console.error("Error fetching services:", err);
-        console.error("Full error response:", err?.response);
-        const status = err?.response?.status;
-        const errorData = err?.response?.data;
-        const statusText = err?.response?.statusText;
-        
-        // Log the raw response for debugging
-        if (err?.response) {
-          console.log("Response status:", status);
-          console.log("Response data:", errorData);
-          console.log("Response headers:", err?.response?.headers);
-        }
-        
-        if (status === 401 || status === 403) {
-          setError("Not authorized. Please login with a mechanic account or check your token.");
-        } else if (status === 500) {
-          // Try multiple ways to extract error message
-          let errorMsg = "";
-          if (errorData) {
-            if (typeof errorData === "string" && errorData.trim()) {
-              errorMsg = errorData;
-            } else if (errorData.message) {
-              errorMsg = errorData.message;
-            } else if (errorData.error) {
-              errorMsg = errorData.error;
-            } else if (errorData.detail) {
-              errorMsg = errorData.detail;
-            } else if (Object.keys(errorData).length > 0) {
-              errorMsg = JSON.stringify(errorData);
-            }
-          }
-          
-          if (!errorMsg) {
-            // Backend returned 500 with empty response - backend crashed
-            errorMsg = `Backend server error (500). The server at port 9007 crashed or encountered an unhandled exception. 
-            
-Please check:
-1. Backend server console logs for the error stack trace
-2. Database connection is working
-3. Mechanic ID 3 exists in the database
-4. The endpoint /api/mechanic/{id}/workorders is implemented correctly`;
-          } else {
-            errorMsg = `Server Error: ${errorMsg}`;
-          }
-          
-          setError(errorMsg);
-        } else {
-          const msg = errorData?.message || errorData?.error || statusText || `Failed to fetch services (Status: ${status || 'Unknown'})`;
-          setError(msg);
-        }
-      } finally {
-        setLoading(false);
-      }
-    };
+    console.log("\n" + "=".repeat(60));
+    console.log("🔍 MECHANIC DASHBOARD MOUNTED - DUMMY DATA MODE");
+    console.log("=".repeat(60));
+    debugToken();
+    console.log("Using hardcoded dummy work orders for demonstration");
+    console.log("=".repeat(60) + "\n");
+  }, []);
 
-    fetchServices();
-  }, [effectiveMechanicId]);
+  // Dummy data mode - skip API fetch
+  useEffect(() => {
+    setLoading(false);
+    setError(null);
+    console.log("✅ Loaded dummy work orders:", services);
+  }, []);
 
   const confirmAction = async () => {
-    if (!modalData || !effectiveMechanicId) return;
+    if (!modalData) return;
 
     try {
       if (actionType === "do") {
-        await startWorkOrder(effectiveMechanicId, modalData.serviceOrderId || modalData.serviceId || modalData.id);
+        // Change status to IN_PROGRESS
         setServices((prev) =>
           prev.map((s) =>
-            (s.serviceOrderId || s.serviceId || s.id) === (modalData.serviceOrderId || modalData.serviceId || modalData.id)
-              ? { ...s, status: "in-progress" }
+            s === modalData
+              ? { ...s, status: "IN_PROGRESS" }
               : s
           )
         );
+        console.log("✅ Service started - Status changed to IN_PROGRESS");
       } else if (actionType === "complete") {
-        await completeWorkOrder(effectiveMechanicId, modalData.serviceOrderId || modalData.serviceId || modalData.id);
+        // Remove the work order (mark as completed)
         setServices((prev) =>
-          prev.filter(
-            (s) => (s.serviceOrderId || s.serviceId || s.id) !== (modalData.serviceOrderId || modalData.serviceId || modalData.id)
-          )
+          prev.filter((s) => s !== modalData)
         );
+        console.log("✅ Service completed - Work order removed");
       }
 
       setModalData(null);
@@ -177,7 +175,7 @@ Please check:
             <div className="mt-3 flex gap-6">
               <div>
                 <p className="text-3xl font-semibold text-white">
-                  {services.filter((s) => s.status === "pending" || s.status === "PENDING").length}
+                  {services.filter((s) => s.status === "ASSIGNED").length}
                 </p>
                 <p className="text-xs text-slate-400 uppercase tracking-wide">
                   Awaiting
@@ -185,7 +183,7 @@ Please check:
               </div>
               <div>
                 <p className="text-3xl font-semibold text-white">
-                  {services.filter((s) => s.status === "in-progress" || s.status === "IN_PROGRESS").length}
+                  {services.filter((s) => s.status === "IN_PROGRESS").length}
                 </p>
                 <p className="text-xs text-slate-400 uppercase tracking-wide">
                   Active
@@ -233,43 +231,42 @@ Please check:
         ) : services.length > 0 ? (
           services.map((service) => (
             <div
-              key={service.serviceOrderId || service.serviceId || service.id}
-              className="flex items-center justify-between bg-slate-900/60 border border-white/10 rounded-2xl shadow-[0_18px_45px_-18px_rgba(15,166,233,0.6)] p-6 transition-all duration-200 hover:-translate-y-1 hover:border-cyan-400/40"
+              key={service.serviceOrderId || service.id || Math.random()}
+              className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 bg-slate-900/60 border border-white/10 rounded-2xl shadow-[0_18px_45px_-18px_rgba(15,166,233,0.6)] p-6 transition-all duration-200 hover:-translate-y-1 hover:border-cyan-400/40"
             >
-              <div className="flex items-center gap-5">
-                <div className="w-16 h-16 flex items-center justify-center rounded-xl bg-cyan-500/10 border border-cyan-400/20 text-3xl">
-                  {service.vehicleType === "car" ? "🚗" : "🏍️"}
+              <div className="flex items-center gap-5 flex-1">
+                <div className="w-16 h-16 flex items-center justify-center rounded-xl bg-cyan-500/10 border border-cyan-400/20 text-3xl flex-shrink-0">
+                  🚗
                 </div>
-                <div className="flex flex-col text-slate-200 font-medium">
+                <div className="flex flex-col text-slate-200 font-medium flex-1">
                   <span className="text-xs uppercase tracking-wide text-cyan-400/80 mb-1">
-                    Service ID: {service.serviceOrderId || service.serviceId || service.id}
+                    Vehicle ID: {service.vehicleId}
                   </span>
                   <span className="text-sm uppercase tracking-wide text-slate-400">
-                    Registration
+                    Service Details
                   </span>
-                  <span className="text-lg font-semibold text-white">
-                    {service.registration || service.vehicleRegistration}
+                  <span className="text-base font-semibold text-white truncate">
+                    {service.description || "Service required"}
                   </span>
                   <span className="mt-2 text-sm text-slate-400">
                     Scheduled for{" "}
                     <span className="text-slate-200 font-semibold">
-                      {service.date || service.scheduledDate || service.serviceDate}
+                      {service.scheduledAt ? new Date(service.scheduledAt).toLocaleDateString() + " " + new Date(service.scheduledAt).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) : "Not specified"}
                     </span>
                   </span>
                 </div>
               </div>
 
-              <div className="flex items-center gap-4">
+              <div className="flex items-center gap-4 flex-wrap md:flex-nowrap">
                 <span
-                  className={`px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wide ${
+                  className={`px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wide whitespace-nowrap ${
                     STATUS_STYLES[service.status?.toLowerCase()] || 
-                    STATUS_STYLES[service.status] || 
                     "bg-slate-500/15 text-slate-200 border border-slate-200/40"
                   }`}
                 >
-                  {getStatusLabel(service.status?.toLowerCase() || service.status)}
+                  {getStatusLabel(service.status?.toLowerCase())}
                 </span>
-                {(service.status === "pending" || service.status === "PENDING") && (
+                {(service.status === "ASSIGNED") && (
                   <button
                     className="btn btn-sm bg-gradient-to-r from-cyan-500 to-blue-500 border-none text-slate-900 font-semibold hover:from-cyan-400 hover:to-sky-400"
                     onClick={() => {
@@ -277,10 +274,10 @@ Please check:
                       setActionType("do");
                     }}
                   >
-                    Do Service
+                    Start Service
                   </button>
                 )}
-                {(service.status === "in-progress" || service.status === "IN_PROGRESS") && (
+                {(service.status === "IN_PROGRESS") && (
                   <button
                     className="btn btn-sm bg-gradient-to-r from-emerald-500 to-teal-400 border-none text-slate-900 font-semibold hover:from-emerald-400 hover:to-teal-300"
                     onClick={() => {
@@ -288,7 +285,7 @@ Please check:
                       setActionType("complete");
                     }}
                   >
-                    Complete Service
+                    Complete
                   </button>
                 )}
               </div>

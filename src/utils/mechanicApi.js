@@ -14,23 +14,31 @@ api.interceptors.request.use((config) => {
   try {
     const token = localStorage.getItem("authToken");
     if (token) {
-      config.headers = { ...(config.headers || {}), Authorization: `Bearer ${token}` };
+      config.headers.Authorization = `Bearer ${token}`;
+      console.log(`✅ [Axios] Authorization header set for ${config.url}`);
+    } else {
+      console.warn(`❌ [Axios] No token found in localStorage for ${config.url}`);
     }
-  } catch {}
+  } catch (e) {
+    console.error("❌ [Axios] Error setting Authorization header:", e);
+  }
   return config;
 });
 
 // Log responses for debugging
 api.interceptors.response.use(
-  (response) => response,
+  (response) => {
+    console.log(`✅ [API] ${response.config.method.toUpperCase()} ${response.config.url} - Status: ${response.status}`);
+    return response;
+  },
   (error) => {
-    console.error("API Error Details:", {
+    console.error(`❌ [API] Error:`, {
       url: error.config?.url,
       method: error.config?.method,
       status: error.response?.status,
       statusText: error.response?.statusText,
+      authHeader: error.config?.headers?.Authorization ? "✅ Sent" : "❌ Not sent",
       data: error.response?.data,
-      headers: error.response?.headers,
     });
     return Promise.reject(error);
   }
