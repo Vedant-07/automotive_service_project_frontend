@@ -7,7 +7,7 @@ import { useNavigate } from "react-router-dom"; // added for Back button
 const { VITE_API_HOST } = import.meta.env;
 
 // TODO: move VehicleCard to components folder
-const VehicleCard = ({ v, onEdit, onDelete }) => {
+const VehicleCard = ({ v, onEdit, onDelete, onBookService }) => {
   return (
     <div className="card bg-base-100 shadow-sm overflow-hidden p-4">
       <div className="flex flex-col md:flex-row items-center md:items-start gap-4">
@@ -17,7 +17,7 @@ const VehicleCard = ({ v, onEdit, onDelete }) => {
             <img
               src={
                 v.imageUrl ||
-                "https://img.daisyui.com/images/stock/photo-1524499982521-1ffd58dd89ea.jpg"
+                "https://www.shutterstock.com/image-vector/car-logo-icon-emblem-design-600nw-473088037.jpg"
               }
               alt={v.make ?? "vehicle"}
               className="w-full h-full object-cover"
@@ -53,26 +53,46 @@ const VehicleCard = ({ v, onEdit, onDelete }) => {
 
         {/* Right: Book service + Edit/Delete */}
         <div className="mt-3 md:mt-0 md:ml-4 flex-shrink-0 flex flex-col gap-2">
-          <button className="btn btn-outline btn-primary">Book service</button>
-          <div className="flex gap-2">
-            <button
-              className="btn btn-sm btn-outline"
-              onClick={() => onEdit(v)}
-            >
-              Edit
-            </button>
-            <button
-              className="btn btn-sm btn-outline btn-error"
-              onClick={() => onDelete(v)}
-            >
-              Delete
-            </button>
-          </div>
+          <button
+            className={`btn ${
+              v.isBookedForService
+                ? "btn-outline btn-disabled cursor-not-allowed"
+                : "btn-outline btn-primary"
+            }`}
+            disabled={v.isBookedForService}
+            title={
+              v.isBookedForService
+                ? "This vehicle already has a booked service"
+                : "Book a service for this vehicle"
+            }
+            onClick={() => !v.isBookedForService && onBookService(v)}
+          >
+            {v.isBookedForService ? "✅ Service Booked" : "Book Service"}
+          </button>
+
+          {/* Hide Edit/Delete if booked */}
+          {!v.isBookedForService && (
+            <div className="flex gap-2">
+              <button
+                className="btn btn-sm btn-outline"
+                onClick={() => onEdit(v)}
+              >
+                Edit
+              </button>
+              <button
+                className="btn btn-sm btn-outline btn-error"
+                onClick={() => onDelete(v)}
+              >
+                Delete
+              </button>
+            </div>
+          )}
         </div>
       </div>
     </div>
   );
 };
+
 
 // Modal - reused for Add + Edit
 const VehicleModal = ({ open, onClose, onSubmit, initialData, saving }) => {
@@ -203,29 +223,42 @@ export default function CustomerVehicle() {
   const navigate = useNavigate();
   const user = useSelector((s) => s.user);
   const customerId = user?.userId;
+  const token = user?.token;
   const [vehicles, setVehicles] = useState([]);
   const [loading, setLoading] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
   const [saving, setSaving] = useState(false);
   const [editingVehicle, setEditingVehicle] = useState(null);
 
+  // helper to create headers with token
+  const authHeaders = (extra = {}) => {
+    const h = { ...extra };
+    if (token) {
+      h.Authorization = `Bearer ${token}`;
+    }
+    return h;
+  };
+
   // fetch
   useEffect(() => {
-    if (!customerId) return;
+    if (!customerId || !token) return;
     const controller = new AbortController();
-    const url = `${VITE_API_HOST}:9004/api/customers/${customerId}/vehicles`;
+    const url = `${VITE_API_HOST}:9005/api/customers/${customerId}/vehicles`;
     const fetchVehicles = async () => {
       setLoading(true);
       try {
         const resp = await axios.get(url, {
-          signal: controller.signal, // TODO: whats this for have a look , of not needed then remove it
+          signal: controller.signal,
           withCredentials: true,
+          headers: authHeaders({ Accept: "application/json" }),
         });
         setVehicles(resp.data || []);
       } catch (err) {
         if (err.name !== "CanceledError" && err.name !== "AbortError") {
           console.error("Failed to fetch vehicles:", err);
-          alert("Failed to load vehicles. Check console for details.");
+          const msg =
+            err?.response?.data?.error || err.message || "Unknown error";
+          alert("Failed to load vehicles. " + msg);
         }
       } finally {
         setLoading(false);
@@ -233,28 +266,32 @@ export default function CustomerVehicle() {
     };
     fetchVehicles();
     return () => controller.abort();
-  }, [customerId]);
+    // include token so refetch happens when token changes
+  }, [customerId, token]);
 
   // create/update
   const saveVehicle = async (payload) => {
-    if (!customerId) return;
+    if (!customerId || !token) {
+      alert("You must be logged in to perform this action.");
+      return;
+    }
     setSaving(true);
     try {
       if (editingVehicle) {
-        const url = `${VITE_API_HOST}:9004/api/customers/${customerId}/vehicles/${editingVehicle.vehicleId}`;
+        const url = `${VITE_API_HOST}:9005/api/customers/${customerId}/vehicles/${editingVehicle.vehicleId}`;
         const resp = await axios.put(url, payload, {
           withCredentials: true,
-          headers: { "Content-Type": "application/json" },
+          headers: authHeaders({ "Content-Type": "application/json" }),
         });
         const updated = resp.data;
         setVehicles((p) =>
           p.map((v) => (v.vehicleId === updated.vehicleId ? updated : v))
         );
       } else {
-        const url = `${VITE_API_HOST}:9004/api/customers/${customerId}/vehicles`;
+        const url = `${VITE_API_HOST}:9005/api/customers/${customerId}/vehicles`;
         const resp = await axios.post(url, payload, {
           withCredentials: true,
-          headers: { "Content-Type": "application/json" },
+          headers: authHeaders({ "Content-Type": "application/json" }),
         });
         setVehicles((p) => [resp.data, ...p]);
       }
@@ -262,7 +299,8 @@ export default function CustomerVehicle() {
       setEditingVehicle(null);
     } catch (err) {
       console.error("Save failed:", err);
-      alert("Failed to save vehicle.");
+      const msg = err?.response?.data?.error || err.message || "Unknown error";
+      alert("Failed to save vehicle. " + msg);
     } finally {
       setSaving(false);
     }
@@ -270,15 +308,20 @@ export default function CustomerVehicle() {
 
   // delete
   const deleteVehicle = async (v) => {
-    if (!customerId || !v?.vehicleId) return;
-    if (!window.confirm("Are you sure you want to delete this vehicle?")) return;
+    if (!customerId || !v?.vehicleId || !token) return;
+    if (!window.confirm("Are you sure you want to delete this vehicle?"))
+      return;
     try {
-      const url = `${VITE_API_HOST}:9004/api/customers/${customerId}/vehicles/${v.vehicleId}`;
-      await axios.delete(url, { withCredentials: true });
+      const url = `${VITE_API_HOST}:9005/api/customers/${customerId}/vehicles/${v.vehicleId}`;
+      await axios.delete(url, {
+        withCredentials: true,
+        headers: authHeaders(),
+      });
       setVehicles((p) => p.filter((x) => x.vehicleId !== v.vehicleId));
     } catch (err) {
       console.error("Delete failed:", err);
-      alert("Failed to delete vehicle.");
+      const msg = err?.response?.data?.error || err.message || "Unknown error";
+      alert("Failed to delete vehicle. " + msg);
     }
   };
 
@@ -324,6 +367,11 @@ export default function CustomerVehicle() {
                 setModalOpen(true);
               }}
               onDelete={deleteVehicle}
+              onBookService={(veh) => {
+                if (!veh.isBookedForService) {
+                  navigate(`/customer/vehicles/${veh.vehicleId}/book-service`);
+                }
+              }}
             />
           ))}
         </div>

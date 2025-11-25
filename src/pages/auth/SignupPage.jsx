@@ -2,7 +2,14 @@ import React, { useState } from "react";
 import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/outline";
 import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
-const { VITE_API_HOST } = import.meta.env;
+// const { VITE_API_HOST } = import.meta.env;
+// runtime-friendly VITE_API_HOST fallback used earlier
+const VITE_API_HOST =
+  (globalThis.__vite_import_meta__ &&
+    globalThis.__vite_import_meta__.env &&
+    globalThis.__vite_import_meta__.env.VITE_API_HOST) ||
+  (typeof process !== "undefined" && process.env.VITE_API_HOST) ||
+  "";
 
 const SignupPage = () => {
   const [formData, setFormData] = useState({
@@ -276,6 +283,7 @@ const SignupPage = () => {
             >
               <option value="" className="bg-slate-800">-- Select Role --</option>
               <option value="CUSTOMER" className="bg-slate-800">Customer</option>
+              <option value="MECHANIC" className="bg-slate-800">Mechanic</option>
               <option value="SERVICE_MANAGER" className="bg-slate-800">SERVICE_MANAGER</option>
             </select>
           </div>

@@ -3,6 +3,7 @@ import PrivateRoute from "./PrivateRoute";
 import NotFound from "../pages/NotFound";
 import ServiceManagerDashboard from "../pages/serviceManager/ServiceManagerDashboard";
 import ServiceManagerLayout from "../layouts/ServiceManagerLayout";
+import WorkOrderDetail from "../pages/serviceManager/WorkOrderDetail";
 
 export default function ServiceManagerRoutes() {
   return (
@@ -10,6 +11,7 @@ export default function ServiceManagerRoutes() {
       <Route element={<PrivateRoute allowedRole="SERVICE_MANAGER" />}>
         <Route element={<ServiceManagerLayout />}>
           <Route path="/" element={<ServiceManagerDashboard />} />
+          <Route path="workorders/:serviceOrderId" element={<WorkOrderDetail />} />
         </Route>
       </Route>
 
