@@ -33,7 +33,22 @@ export default defineConfig({
         target: "http://localhost:9002",
         changeOrigin: true,
         secure: false,
-        rewrite: (path) => path.replace(/^\/auth/, ""),
+        rewrite: (path) => {
+          // Handle signup requests - route to port 9001
+          if (path.includes("/signup")) {
+            return path.replace(/^\/auth/, "/signup");
+          }
+          // Handle login requests - route to port 9002
+          return path.replace(/^\/auth/, "");
+        },
+        configure: (proxy) => {
+          proxy.on("proxyReq", (proxyReq, req, res) => {
+            // Route signup to port 9001, login stays on 9002
+            if (req.url.includes("/signup")) {
+              proxyReq.setHost("localhost:9001");
+            }
+          });
+        },
       },
     },
   },
